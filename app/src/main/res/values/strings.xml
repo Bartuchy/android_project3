@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">project3</string>
+    <string name="_0">0</string>
+    <string name="adres">Address:</string>
+    <string name="https_cdn_kernel_org_pub_linux_kernel_v5_x_linux_5_4_36_tar_xz">https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.4.36.tar.xz</string>
+    <string name="pobierz_informacje">Pobierz informacje</string>
+    <string name="rozmiar_pliku">Rozmiar pliku:</string>
+    <string name="pobierz_plik">Pobierz plik</string>
+    <string name="typ_pliku">Typ pliku:</string>
+    <string name="pobrano_bajt_w">Pobrano bajtów:</string>
 </resources>

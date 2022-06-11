@@ -9,9 +9,19 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Environment;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class DownloadService extends IntentService {
     private static final String TAG = DownloadService.class.getSimpleName();
@@ -22,8 +32,11 @@ public class DownloadService extends IntentService {
 
     public static final String ACTION_BROADCAST = "com.example.project3.broadcast";
     public static final String ACTION_DOWNLOAD_FILE = "com.example.project3.download_file";
-    public static final String TIME_EXTRA = "com.example.service.project3.time";
+    public static final String FILE_EXTRA = "com.example.service.project3.file";
     public static final String URL_EXTRA = "com.example.service.project3.url";
+    public static final String IN_PROGRESS = "com.example.service.project3.in_progress";
+    public static final String FINISHED = "com.example.service.project3.finished";
+
 
     private NotificationManager notificationManager;
     private int bytesDownloaded = 0;
@@ -90,5 +103,39 @@ public class DownloadService extends IntentService {
 
     }
 
+    private void prepareForDownloading(Intent intent) throws IOException {
+        String action = intent.getAction();
 
+        if (ACTION_DOWNLOAD_FILE.equals(action)) {
+            String url = intent.getStringExtra(URL_EXTRA);
+            startDownloadingProcess(url);
+        }
+    }
+
+    private void startDownloadingProcess(String url) throws IOException {
+        InputStream inputStream = null;
+        FileOutputStream outputStream = null;
+
+        URL _url = new URL(url);
+        inputStream = createInputStream(_url);
+        outputStream = createOutputStream(_url);
+    }
+
+    private InputStream createInputStream(URL url) throws IOException {
+        URLConnection connection = url.openConnection();
+        size = connection.getContentLength();
+        return new DataInputStream(connection.getInputStream());
+    }
+
+    private FileOutputStream createOutputStream(URL url) throws FileNotFoundException {
+        File tempFile = new File(url.getFile());
+        File outputFile = new File(
+                Environment.getExternalStorageState()
+                        + File.separator
+                        + tempFile.getName());
+        if (outputFile.exists()) {
+            outputFile.delete();
+        }
+        return new FileOutputStream(outputFile.getPath());
+    }
 }
